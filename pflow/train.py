@@ -63,7 +63,11 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     logger: List[Logger] = utils.instantiate_loggers(cfg.get("logger"))
 
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")  # pylint: disable=protected-access
-    trainer: Trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=logger, strategy=DDPStrategy(find_unused_parameters=True))
+    if len(cfg.trainer.devices) > 1:
+        trainer: Trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=logger,
+                                                   strategy=DDPStrategy(find_unused_parameters=True))
+    else:
+        trainer: Trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=logger)
 
     log.info("Instantiating transfer learning...")
     if cfg.get("transfer_ckpt_path") is not None:
