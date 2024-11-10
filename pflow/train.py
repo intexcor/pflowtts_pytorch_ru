@@ -10,6 +10,8 @@ from lightning.pytorch.strategies import DDPStrategy
 from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig
 import torch
+import sys
+sys.modules['tkinter'] = None
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # ------------------------------------------------------------------------------------ #
